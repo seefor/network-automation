@@ -1,0 +1,112 @@
+# =============================================================================
+# Containerlab Topology — Network Automation Lab
+# =============================================================================
+# Three Arista cEOS switches in a triangle topology.
+#
+# Physical layout
+# ---------------
+#
+#         eth1                eth1
+#   switch-01 ──────────── switch-02
+#     │  \                   /  │
+#     │   eth2          eth2    │
+#     │       \        /        │
+#     │        switch-03        │
+#     │       eth1  eth2        │
+#     │                         │
+#   Lo0: 10.0.0.1          Lo0: 10.0.0.2
+#   Mgmt: 172.20.20.11     Mgmt: 172.20.20.12
+#
+#              switch-03
+#            Lo0: 10.0.0.3
+#            Mgmt: 172.20.20.13
+#
+# Link addressing
+# ---------------
+#   switch-01 eth1 (10.0.12.1/30)  <-->  switch-02 eth1 (10.0.12.2/30)
+#   switch-02 eth2 (10.0.23.1/30)  <-->  switch-03 eth1 (10.0.23.2/30)
+#   switch-01 eth2 (10.0.13.1/30)  <-->  switch-03 eth2 (10.0.13.2/30)
+#
+# Management network
+# ------------------
+#   All three switches attach their management interface to the "lab-net"
+#   Docker bridge network (created by docker-compose.yml) so they share a
+#   Layer-2 domain with the NetBox container.
+#
+# Usage
+# -----
+#   # Make sure docker compose is running first (creates lab-net):
+#   docker compose up -d
+#
+#   # Then deploy the topology:
+#   sudo containerlab deploy -t topology.clab.yml
+#
+#   # Destroy:
+#   sudo containerlab destroy -t topology.clab.yml
+# =============================================================================
+
+name: netauto-lab
+
+mgmt:
+  # Attach management interfaces to the existing Docker bridge created by
+  # docker-compose.  This lets the switches resolve "netbox" by container
+  # name and vice versa.
+  network: lab-net
+  ipv4-subnet: 172.20.20.0/24
+
+topology:
+  defaults:
+    kind: ceos
+
+  kinds:
+    ceos:
+      # Students pull their own Arista cEOS image and tag it as ceos:latest.
+      # See: https://containerlab.dev/manual/kinds/ceos/
+      image: ceos:latest
+
+  nodes:
+    # -----------------------------------------------------------------
+    # switch-01
+    # -----------------------------------------------------------------
+    switch-01:
+      kind: ceos
+      mgmt-ipv4: 172.20.20.11
+      startup-config: configs/switch-01.cfg
+      env:
+        INTFTYPE: et
+
+    # -----------------------------------------------------------------
+    # switch-02
+    # -----------------------------------------------------------------
+    switch-02:
+      kind: ceos
+      mgmt-ipv4: 172.20.20.12
+      startup-config: configs/switch-02.cfg
+      env:
+        INTFTYPE: et
+
+    # -----------------------------------------------------------------
+    # switch-03
+    # -----------------------------------------------------------------
+    switch-03:
+      kind: ceos
+      mgmt-ipv4: 172.20.20.13
+      startup-config: configs/switch-03.cfg
+      env:
+        INTFTYPE: et
+
+  links:
+    # switch-01 eth1 <--> switch-02 eth1
+    - endpoints:
+        - "switch-01:eth1"
+        - "switch-02:eth1"
+
+    # switch-02 eth2 <--> switch-03 eth1
+    - endpoints:
+        - "switch-02:eth2"
+        - "switch-03:eth1"
+
+    # switch-01 eth2 <--> switch-03 eth2
+    - endpoints:
+        - "switch-01:eth2"
+        - "switch-03:eth2"

@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "reclaim-agent": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--directory",
+        "/ABSOLUTE/PATH/TO/network-automation/final-boss",
+        "reclaim-agent"
+      ],
+      "env": {
+        "NETBOX_URL": "http://localhost:8000",
+        "NETBOX_TOKEN": "your-netbox-api-token-here"
+      }
+    }
+  }
+}

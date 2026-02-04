@@ -1,0 +1,25 @@
+# Device inventory for Milestone 2 labs
+# Matches the Containerlab topology: 3 Arista cEOS switches
+#
+# Credentials can be overridden with environment variables:
+#   DEVICE_USERNAME (default: admin)
+#   DEVICE_PASSWORD (default: admin)
+
+devices:
+  - hostname: spine1
+    ip: 172.20.20.11
+    device_type: arista_eos
+    username: admin
+    password: admin
+
+  - hostname: leaf1
+    ip: 172.20.20.12
+    device_type: arista_eos
+    username: admin
+    password: admin
+
+  - hostname: leaf2
+    ip: 172.20.20.13
+    device_type: arista_eos
+    username: admin
+    password: admin

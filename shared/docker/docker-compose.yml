@@ -1,0 +1,148 @@
+# =============================================================================
+# NetBox + Supporting Services — Docker Compose
+# =============================================================================
+# This stack provides the "source of truth" for the network-automation lab.
+#
+# Architecture
+# ------------
+#   NetBox app  (port 8000)  -->  PostgreSQL 16  (DB)
+#                             -->  Redis          (caching + background tasks)
+#
+# The "lab-net" bridge network is shared with Containerlab so that NetBox
+# and the cEOS switches can reach each other by container name.
+#
+# Quick start:
+#   docker compose up -d
+#   # Wait ~60 s for NetBox to run migrations on first boot.
+#   # Then open http://localhost:8000  (admin / admin)
+# =============================================================================
+
+services:
+  # ---------------------------------------------------------------------------
+  # PostgreSQL 16 — NetBox database
+  # ---------------------------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: netbox-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: netbox
+      POSTGRES_USER: netbox
+      POSTGRES_PASSWORD: netbox_db_password
+    volumes:
+      - netbox-postgres-data:/var/lib/postgresql/data
+    networks:
+      - lab-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U netbox -d netbox"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  # ---------------------------------------------------------------------------
+  # Redis — used by NetBox for caching and as a task-queue broker
+  # ---------------------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: netbox-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - netbox-redis-data:/data
+    networks:
+      - lab-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # ---------------------------------------------------------------------------
+  # NetBox application
+  # ---------------------------------------------------------------------------
+  # The official netboxcommunity/netbox image bundles Gunicorn + static files.
+  # On first start it runs Django migrations automatically.
+  # ---------------------------------------------------------------------------
+  netbox:
+    image: netboxcommunity/netbox:latest
+    container_name: netbox
+    restart: unless-stopped
+    ports:
+      - "8000:8080"                       # Host 8000 -> container 8080 (default)
+    environment:
+      # --- Core settings ---------------------------------------------------
+      SECRET_KEY: "t0p-s3cr3t-k3y-ch4ng3-m3-1n-pr0duct10n-netauto-lab-2024"
+      ALLOWED_HOSTS: "*"
+
+      # --- Database --------------------------------------------------------
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_NAME: netbox
+      DB_USER: netbox
+      DB_PASSWORD: netbox_db_password
+
+      # --- Redis (caching) -------------------------------------------------
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      REDIS_DATABASE: "0"
+      REDIS_CACHE_DATABASE: "1"
+
+      # --- Superuser auto-creation (first boot only) -----------------------
+      SUPERUSER_NAME: admin
+      SUPERUSER_EMAIL: admin@example.com
+      SUPERUSER_PASSWORD: admin
+      SUPERUSER_API_TOKEN: "0123456789abcdef0123456789abcdef01234567"
+
+      # --- Misc ------------------------------------------------------------
+      SKIP_SUPERUSER: "false"             # Ensure the superuser IS created
+      CORS_ORIGIN_ALLOW_ALL: "true"       # Convenient for lab REST / UI work
+      LOGIN_REQUIRED: "false"             # Allow read-only anonymous access
+    volumes:
+      - netbox-media-files:/opt/netbox/netbox/media
+      - netbox-reports:/opt/netbox/netbox/reports
+      - netbox-scripts:/opt/netbox/netbox/scripts
+    networks:
+      - lab-net
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8080/login/ || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 90s                   # Migrations can take a while
+
+# =============================================================================
+# Persistent volumes
+# =============================================================================
+volumes:
+  netbox-postgres-data:
+    driver: local
+  netbox-redis-data:
+    driver: local
+  netbox-media-files:
+    driver: local
+  netbox-reports:
+    driver: local
+  netbox-scripts:
+    driver: local
+
+# =============================================================================
+# Shared network
+# =============================================================================
+# Containerlab will attach cEOS management interfaces to this same network
+# so that all lab components share a single L2 domain for management traffic.
+# =============================================================================
+networks:
+  lab-net:
+    name: lab-net
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.20.0/24
+          gateway: 172.20.20.1

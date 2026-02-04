@@ -1,0 +1,30 @@
+# Environment
+.env
+.venv/
+__pycache__/
+*.pyc
+
+# IDE
+.vscode/settings.json
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+.pytest_cache/
+htmlcov/
+.coverage
+
+# Build
+dist/
+*.egg-info/
+
+# Containerlab
+clab-*/
+*.bak
+
+# Docker volumes
+pgdata/
+netbox-media/

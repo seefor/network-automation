@@ -1,0 +1,13 @@
+[project]
+name = "lab02-netbox-mcp"
+version = "0.1.0"
+description = "Lab 02: MCP server for NetBox device inventory and IPAM"
+requires-python = ">=3.11"
+dependencies = [
+    "mcp",
+    "httpx",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

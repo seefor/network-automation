@@ -1,0 +1,12 @@
+[project]
+name = "lab01-hello-mcp"
+version = "0.1.0"
+description = "Lab 01: Minimal MCP server with mock network tools"
+requires-python = ">=3.11"
+dependencies = [
+    "mcp",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

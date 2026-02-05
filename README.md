@@ -79,9 +79,22 @@ source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 
 - **Language:** Python 3.11+ (managed with `uv`)
 - **AI Protocol:** Model Context Protocol (MCP) via Python SDK
-- **Network Targets:** Arista cEOS (Containerlab) + NetBox (Source of Truth)
+- **Network Targets:** Arista cEOS (Containerlab) + NetBox v3.7 (Source of Truth)
 - **AI Runtime:** Ollama (local LLMs — no API key required)
 - **AI Interface:** Claude Desktop (MCP Client) or custom Streamlit UI (Ollama-powered)
+
+## Lab Environment
+
+The lab runs NetBox v3.7 and Arista cEOS containers. NetBox is pinned to v3.7
+for stable API token authentication (v4.0 changed the token format).
+
+| Service | URL | Credentials |
+|---------|-----|-------------|
+| NetBox UI | http://localhost:8000 | `admin` / `admin` |
+| NetBox API Token | (pre-configured) | `0123456789abcdef0123456789abcdef01234567` |
+| cEOS Switches | SSH via Containerlab | `admin` / `admin` |
+
+The API token is automatically created on first boot — no manual setup required.
 
 ## Project Structure
 

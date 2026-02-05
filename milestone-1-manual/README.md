@@ -7,25 +7,32 @@ source of truth.
 
 ## Prerequisites
 
-- Docker and Docker Compose (to run NetBox locally)
-- Python 3.10+
+- Lab environment running (`make lab-up` from the repo root)
+- Python 3.11+ with dependencies installed (`uv sync --all-extras`)
 - `curl` installed
-- A running NetBox instance at `http://localhost:8000`
-- A NetBox API token (Settings > API Tokens in the NetBox UI)
 
 ## Environment Setup
 
+The lab automatically provisions NetBox v3.7 with a pre-configured API token.
+No manual token creation required.
+
 ```bash
-# Export your NetBox token so the labs can use it
-export NETBOX_TOKEN="your-api-token-here"
+# Start the lab (NetBox + seed data)
+make lab-up
 
-# For the Python labs, create a .env file in the labs/ directory
-echo "NETBOX_URL=http://localhost:8000" > labs/.env
-echo "NETBOX_TOKEN=your-api-token-here" >> labs/.env
+# The .env.example at the repo root has the default token.
+# Copy it if you haven't already:
+cp .env.example .env
 
-# Install Python dependencies
-pip install requests python-dotenv
+# For the Python labs, you can also set environment variables directly:
+export NETBOX_URL="http://localhost:8000"
+export NETBOX_TOKEN="0123456789abcdef0123456789abcdef01234567"
 ```
+
+| Service | URL | Credentials |
+|---------|-----|-------------|
+| NetBox UI | http://localhost:8000 | `admin` / `admin` |
+| API Token | (pre-configured) | `0123456789abcdef0123456789abcdef01234567` |
 
 ## Lessons
 

@@ -42,12 +42,12 @@ out of the box.
 ### Starting the Stack
 
 ```bash
-# From the repo root
-make lab-up      # Starts NetBox + seeds data + deploys Containerlab
+# From the repo root — starts NetBox and seeds data
+make lab-up
 
 # Or manually
 docker compose -f shared/docker/docker-compose.yml up -d
-python shared/scripts/seed_netbox.py
+uv run python shared/scripts/seed_netbox.py
 ```
 
 ## Containerlab Topology
@@ -64,14 +64,23 @@ topology for the Final Boss project.
 
 ### Requirements
 
+- Linux environment (Containerlab does not run natively on macOS)
 - Docker
-- Containerlab (`sudo` access required)
-- Arista cEOS image (free registration at arista.com)
+- Containerlab installed (`sudo` access required)
+- Arista cEOS ARM64 image (free registration at arista.com)
+
+> **macOS users:** Containerlab must run inside a Linux VM or devcontainer.
+> See [docs/containerlab-macos.md](../docs/containerlab-macos.md) for setup
+> instructions. Milestones 1-3 do **not** require Containerlab.
 
 ### Deploying
 
 ```bash
-sudo containerlab deploy -t shared/docker/topology.clab.yml
+# Linux
+make clab-up
+
+# Or directly
+sudo containerlab deploy -t shared/docker/topology.clab.yml --reconfigure
 ```
 
 ## Seed Data
@@ -116,9 +125,15 @@ docker compose -f shared/docker/docker-compose.yml down -v
 make lab-up
 ```
 
-### Containerlab requires sudo password
+### Containerlab not found / not supported on macOS
+
+Containerlab requires Linux. On macOS, it must run inside a Linux VM or
+devcontainer. See [docs/containerlab-macos.md](../docs/containerlab-macos.md)
+for detailed setup instructions.
+
+### Containerlab requires sudo password (Linux)
 
 Containerlab needs root privileges to create network namespaces. Either:
 
-1. Run with sudo: `sudo make lab-containerlab`
+1. Run with sudo: `sudo make clab-up`
 2. Configure passwordless sudo for containerlab commands

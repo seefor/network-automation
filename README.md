@@ -14,9 +14,13 @@ A hands-on learning path that transitions network engineers from **imperative sc
 ## Prerequisites
 
 - Basic understanding of IP addressing and SSH
-- A modern laptop (8GB+ RAM)
+- A modern laptop (8GB+ RAM) — Apple Silicon or Linux
 - Software: VS Code, Docker, `uv` (Python package manager)
 - Ollama installed locally (free, no API key needed) — see [Ollama Setup Guide](final-boss/docs/ollama-setup.md)
+
+> **macOS users:** Milestones 1-3 work natively on macOS. The Final Boss
+> project uses Containerlab for network switches, which requires a Linux VM
+> on macOS. See [Containerlab on macOS](docs/containerlab-macos.md).
 
 ## Quick Start
 
@@ -38,11 +42,15 @@ uv sync --all-extras
 # 5. Copy environment config
 cp .env.example .env
 
-# 6. Start the lab environment
+# 6. Start the lab environment (NetBox + seed data)
 make lab-up
 
 # 7. Verify everything is running
 make lab-status
+
+# 8. (Optional) Deploy Containerlab switches — Linux only
+#    See docs/containerlab-macos.md for macOS instructions
+make clab-up
 ```
 
 ## Python Environment
@@ -108,6 +116,7 @@ network-automation/
 │   ├── docs/                # Setup guides (Ollama, Claude Desktop)
 │   └── tests/               # Test suite
 ├── shared/                  # Shared Docker configs & scripts
+├── docs/                    # Platform-specific guides
 ├── pyproject.toml           # Python dependencies (uv/pip)
 ├── Makefile                 # Lab orchestration commands
 └── .env.example             # Environment variable template

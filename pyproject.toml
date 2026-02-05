@@ -1,0 +1,59 @@
+[project]
+name = "network-automation-course"
+version = "0.1.0"
+description = "AI-Powered Network Automation Course - From REST APIs to Agentic Automation"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+
+dependencies = [
+    # --- Core ---
+    "python-dotenv",
+    "httpx",
+    "pydantic",
+    "pydantic-settings",
+    "rich",
+
+    # --- Network Automation ---
+    "netmiko",
+    "napalm",
+    "pynetbox",
+    "pyyaml",
+
+    # --- AI / MCP ---
+    "mcp",
+    "ollama",
+
+    # --- UI ---
+    "streamlit",
+
+    # --- Milestone 1: API Testing ---
+    "requests",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-asyncio",
+    "ruff",
+    "ipython",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+# ---------------------------------------------------------------------------
+# Tool configuration
+# ---------------------------------------------------------------------------
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["final-boss/tests"]

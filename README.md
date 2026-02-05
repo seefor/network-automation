@@ -21,22 +21,62 @@ A hands-on learning path that transitions network engineers from **imperative sc
 ## Quick Start
 
 ```bash
-# Install uv (Python package manager)
+# 1. Install uv (Python package manager)
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# Install Ollama (local LLM runtime)
+# 2. Install Ollama (local LLM runtime)
 curl -fsSL https://ollama.com/install.sh | sh
 ollama pull llama3.1
 
-# Clone and enter the repo
-git clone https://github.com/seefor/network-automation && cd network-automation
+# 3. Clone and enter the repo
+git clone https://github.com/seefor/network-automation.git
+cd network-automation
 
-# Start the lab environment
+# 4. Create virtual environment and install dependencies
+uv venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+uv pip install -e ".[dev]"
+
+# 5. Copy environment config
+cp .env.example .env
+
+# 6. Start the lab environment
 make lab-up
 
-# Verify everything is running
+# 7. Verify everything is running
 make lab-status
 ```
+
+## Python Environment
+
+This project uses `uv` for fast, reliable Python environment management. All
+dependencies are defined in `pyproject.toml` at the repo root.
+
+```bash
+# Create and activate virtual environment
+uv venv
+source .venv/bin/activate
+
+# Install all dependencies (including dev tools)
+uv pip install -e ".[dev]"
+
+# Or install without dev dependencies
+uv pip install -e .
+```
+
+### What gets installed
+
+| Package | Purpose |
+|---------|---------|
+| `httpx`, `requests` | HTTP clients for API calls |
+| `netmiko`, `napalm` | Network device automation |
+| `pynetbox` | NetBox API client |
+| `mcp` | Model Context Protocol SDK |
+| `ollama` | Ollama Python client |
+| `streamlit` | Chat UI framework |
+| `pydantic` | Data validation |
+| `rich` | Terminal formatting |
+| `pytest`, `ruff` | Testing and linting (dev) |
 
 ## Tech Stack
 
@@ -55,9 +95,10 @@ network-automation/
 ├── milestone-3-agentic/     # MCP basics
 ├── final-boss/              # Graduation project
 │   ├── src/reclaim_agent/   # MCP server skeleton
-│   ├── lab/                 # Docker + Containerlab configs
+│   ├── docs/                # Setup guides (Ollama, Claude Desktop)
 │   └── tests/               # Test suite
 ├── shared/                  # Shared Docker configs & scripts
+├── pyproject.toml           # Python dependencies (uv/pip)
 ├── Makefile                 # Lab orchestration commands
 └── .env.example             # Environment variable template
 ```

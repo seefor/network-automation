@@ -33,9 +33,7 @@ git clone https://github.com/seefor/network-automation.git
 cd network-automation
 
 # 4. Create virtual environment and install dependencies
-uv venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-uv pip install -e ".[dev]"
+uv sync --all-extras
 
 # 5. Copy environment config
 cp .env.example .env
@@ -53,15 +51,14 @@ This project uses `uv` for fast, reliable Python environment management. All
 dependencies are defined in `pyproject.toml` at the repo root.
 
 ```bash
-# Create and activate virtual environment
-uv venv
-source .venv/bin/activate
-
-# Install all dependencies (including dev tools)
-uv pip install -e ".[dev]"
+# Install all dependencies (creates .venv automatically)
+uv sync --all-extras
 
 # Or install without dev dependencies
-uv pip install -e .
+uv sync
+
+# Activate the virtual environment (optional - uv run handles this)
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 ```
 
 ### What gets installed

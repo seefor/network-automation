@@ -384,15 +384,17 @@ def main() -> None:
     print("=" * 60)
 
     # Verify connectivity before doing anything.
+    # Use /dcim/sites/ as the health check endpoint since /status/ requires
+    # authentication in newer NetBox versions.
     try:
-        health = client.get("/status/")
+        health = client.get("/dcim/sites/")
         health.raise_for_status()
         _log(f"NetBox is reachable (HTTP {health.status_code})")
     except httpx.HTTPError as exc:
         print(
-            f"\n  !! Cannot reach NetBox at {NETBOX_URL}/api/status/\n"
+            f"\n  !! Cannot reach NetBox at {NETBOX_URL}/api/dcim/sites/\n"
             f"     {exc}\n"
-            f"  Make sure NetBox is running and NETBOX_URL is correct.\n",
+            f"  Make sure NetBox is running and NETBOX_URL/NETBOX_TOKEN are correct.\n",
             file=sys.stderr,
         )
         sys.exit(1)

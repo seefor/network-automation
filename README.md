@@ -29,7 +29,7 @@ curl -fsSL https://ollama.com/install.sh | sh
 ollama pull llama3.1
 
 # Clone and enter the repo
-git clone <repo-url> && cd network-automation
+git clone https://github.com/seefor/network-automation && cd network-automation
 
 # Start the lab environment
 make lab-up

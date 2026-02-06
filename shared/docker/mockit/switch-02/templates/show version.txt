@@ -1,0 +1,13 @@
+Arista vEOS-lab
+Hardware version: 1.00
+Serial number: switch-02
+Hardware MAC address: 0000.0a02.0001
+System MAC address: 0000.0a02.0001
+
+Software image version: 4.32.0F (Mock'it lab emulator)
+Architecture: x86_64
+Internal build version: 4.32.0F
+
+Uptime: 0 weeks, 0 days, 1 hours, 0 minutes
+Total memory: 2048000 kB
+Free memory: 1024000 kB

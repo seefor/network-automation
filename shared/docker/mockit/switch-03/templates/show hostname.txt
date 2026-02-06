@@ -1,0 +1,2 @@
+Hostname: switch-03
+FQDN:     switch-03.lab.local

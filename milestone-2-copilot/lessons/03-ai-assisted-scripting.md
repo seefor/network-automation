@@ -99,8 +99,8 @@ My script is broken. Fix it.
 ```
 ROLE: Python developer debugging a Netmiko script.
 
-CONTEXT: I am running this script against Arista cEOS in Containerlab.
-Python 3.11, Netmiko 4.2, running on macOS.
+CONTEXT: I am running this script against Arista EOS switches in a
+Docker lab (Mockit). Python 3.11, Netmiko 4.2, running on macOS.
 
 ERROR: [paste the full traceback]
 
@@ -177,7 +177,7 @@ Build validation into your workflow, not as an afterthought.
 ```
 1. AI generates script
 2. You review the code
-3. Run against Containerlab topology (never production)
+3. Run against lab topology (never production)
 4. Compare output to manual CLI verification
 5. If output matches, promote to production
 ```

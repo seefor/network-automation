@@ -11,7 +11,7 @@ SETUP:
     These tests require a running NetBox instance. Make sure your .env file
     is configured with valid NETBOX_URL and NETBOX_TOKEN values.
 
-    For local development, you can use the containerlab NetBox instance.
+    For local development, run `make lab-up` to start the lab NetBox instance.
 
 WHAT TO TEST:
     - get_version()    : Should return a version string (already implemented)
@@ -91,7 +91,7 @@ async def test_get_active_ips(netbox_client: NetBoxClient) -> None:
 
     Hints:
       - Use a prefix that you KNOW has active IPs in your NetBox instance
-      - The test prefix should match what's in your containerlab setup
+      - The test prefix should match what's seeded in your lab setup
     """
     # TODO: Update this prefix to match your lab environment
     test_prefix = "10.0.1.0/24"

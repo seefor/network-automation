@@ -26,8 +26,8 @@ A structured prompt for network automation has five parts:
 ROLE: You are a senior network automation engineer who writes production
 Python code for Arista EOS environments.
 
-CONTEXT: I manage 3 Arista cEOS switches in a lab running EOS 4.28.
-They are reachable via SSH on the management network 172.20.20.0/24.
+CONTEXT: I manage 3 Arista EOS switches in a lab on the management
+network 172.20.20.0/24. They are reachable via SSH.
 I use Netmiko for device access and YAML for inventory files.
 
 TASK: Write a Python script that connects to each switch, runs

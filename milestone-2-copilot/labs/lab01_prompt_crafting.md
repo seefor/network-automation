@@ -9,7 +9,7 @@ and evaluate the result.
 ## Setup
 
 - Access to an LLM (Claude, ChatGPT, or a local model)
-- Your Containerlab topology running 3 Arista cEOS switches
+- Lab environment running (`make lab-up` — includes 3 mock Arista EOS switches)
 - The [inventory.yml](inventory.yml) file from this directory
 - Python 3.11+ with `netmiko`, `pyyaml`, and `rich` installed
 

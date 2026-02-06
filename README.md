@@ -18,9 +18,8 @@ A hands-on learning path that transitions network engineers from **imperative sc
 - Software: VS Code, Docker, `uv` (Python package manager)
 - Ollama installed locally (free, no API key needed) — see [Ollama Setup Guide](final-boss/docs/ollama-setup.md)
 
-> **macOS users:** Milestones 1-3 work natively on macOS. The Final Boss
-> project uses Containerlab for network switches, which requires a Linux VM
-> on macOS. See [Containerlab on macOS](docs/containerlab-macos.md).
+> **Everything runs on Docker** — no Linux VM needed, even on Apple Silicon Macs.
+> Network switches are emulated with [Mockit](https://gitlab.com/slurpit.io/mockit).
 
 ## Quick Start
 
@@ -42,15 +41,11 @@ uv sync --all-extras
 # 5. Copy environment config
 cp .env.example .env
 
-# 6. Start the lab environment (NetBox + seed data)
+# 6. Start the lab (NetBox + mock switches + seed data)
 make lab-up
 
 # 7. Verify everything is running
 make lab-status
-
-# 8. (Optional) Deploy Containerlab switches — Linux only
-#    See docs/containerlab-macos.md for macOS instructions
-make clab-up
 ```
 
 ## Python Environment
@@ -87,22 +82,25 @@ source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 
 - **Language:** Python 3.11+ (managed with `uv`)
 - **AI Protocol:** Model Context Protocol (MCP) via Python SDK
-- **Network Targets:** Arista cEOS (Containerlab) + NetBox v3.7 (Source of Truth)
+- **Network Targets:** Arista EOS emulators (Mockit) + NetBox v3.7 (Source of Truth)
 - **AI Runtime:** Ollama (local LLMs — no API key required)
 - **AI Interface:** Claude Desktop (MCP Client) or custom Streamlit UI (Ollama-powered)
 
 ## Lab Environment
 
-The lab runs NetBox v3.7 and Arista cEOS containers. NetBox is pinned to v3.7
-for stable API token authentication (v4.0 changed the token format).
+The lab runs NetBox v3.7 and three mock Arista EOS switches
+([Mockit](https://gitlab.com/slurpit.io/mockit)). Everything is Docker-based
+and works on macOS (Apple Silicon), Linux, and Windows.
 
-| Service | URL | Credentials |
-|---------|-----|-------------|
+| Service | Access | Credentials |
+|---------|--------|-------------|
 | NetBox UI | http://localhost:8000 | `admin` / `admin` |
 | NetBox API Token | (pre-configured) | `0123456789abcdef0123456789abcdef01234567` |
-| cEOS Switches | SSH via Containerlab | `admin` / `admin` |
+| switch-01 | SSH localhost:2201 | `admin` / `admin` |
+| switch-02 | SSH localhost:2202 | `admin` / `admin` |
+| switch-03 | SSH localhost:2203 | `admin` / `admin` |
 
-The API token is automatically created on first boot — no manual setup required.
+Everything is automatically provisioned on first boot — no manual setup required.
 
 ## Project Structure
 
@@ -115,8 +113,7 @@ network-automation/
 │   ├── src/reclaim_agent/   # MCP server skeleton
 │   ├── docs/                # Setup guides (Ollama, Claude Desktop)
 │   └── tests/               # Test suite
-├── shared/                  # Shared Docker configs & scripts
-├── docs/                    # Platform-specific guides
+├── shared/                  # Docker configs, Mockit templates & scripts
 ├── pyproject.toml           # Python dependencies (uv/pip)
 ├── Makefile                 # Lab orchestration commands
 └── .env.example             # Environment variable template

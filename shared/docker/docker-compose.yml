@@ -1,15 +1,17 @@
 # =============================================================================
-# NetBox + Supporting Services — Docker Compose
+# NetBox + Mock Network Switches — Docker Compose
 # =============================================================================
-# This stack provides the "source of truth" for the network-automation lab.
+# This stack provides the full lab environment for the network-automation
+# course:
 #
-# Architecture
-# ------------
 #   NetBox app  (port 8000)  -->  PostgreSQL 16  (DB)
 #                             -->  Redis          (caching + background tasks)
 #
-# The "lab-net" bridge network is shared with Containerlab so that NetBox
-# and the cEOS switches can reach each other by container name.
+#   Three mock Arista switches (Mockit) on the lab-net bridge network,
+#   reachable via SSH at 172.20.20.11-13.
+#
+# The "lab-net" bridge network connects all lab components so NetBox
+# and the switches can reach each other by container name.
 #
 # Quick start:
 #   docker compose up -d
@@ -117,6 +119,65 @@ services:
       retries: 10
       start_period: 90s                   # Migrations can take a while
 
+  # ---------------------------------------------------------------------------
+  # Mock Arista Switches — Mockit (https://gitlab.com/slurpit.io/mockit)
+  # ---------------------------------------------------------------------------
+  # Three emulated Arista EOS switches that accept SSH connections and return
+  # pre-configured command output. Used for the Final Boss reclamation agent.
+  #
+  # Each switch has its own set of template files that define what commands
+  # return (e.g., "show ip arp" returns a specific ARP table).
+  #
+  # SSH credentials: admin / admin
+  # ---------------------------------------------------------------------------
+  switch-01:
+    image: registry.gitlab.com/slurpit.io/mockit:latest
+    container_name: switch-01
+    restart: unless-stopped
+    ports:
+      - "2201:22"                        # SSH accessible on localhost:2201
+    environment:
+      DEVICE_TYPE: arista_eos
+      SSH_USERNAME: admin
+      SSH_PASSWORD: admin
+    volumes:
+      - ./mockit/switch-01/templates:/configs/arista_eos/templates
+    networks:
+      lab-net:
+        ipv4_address: 172.20.20.11
+
+  switch-02:
+    image: registry.gitlab.com/slurpit.io/mockit:latest
+    container_name: switch-02
+    restart: unless-stopped
+    ports:
+      - "2202:22"                        # SSH accessible on localhost:2202
+    environment:
+      DEVICE_TYPE: arista_eos
+      SSH_USERNAME: admin
+      SSH_PASSWORD: admin
+    volumes:
+      - ./mockit/switch-02/templates:/configs/arista_eos/templates
+    networks:
+      lab-net:
+        ipv4_address: 172.20.20.12
+
+  switch-03:
+    image: registry.gitlab.com/slurpit.io/mockit:latest
+    container_name: switch-03
+    restart: unless-stopped
+    ports:
+      - "2203:22"                        # SSH accessible on localhost:2203
+    environment:
+      DEVICE_TYPE: arista_eos
+      SSH_USERNAME: admin
+      SSH_PASSWORD: admin
+    volumes:
+      - ./mockit/switch-03/templates:/configs/arista_eos/templates
+    networks:
+      lab-net:
+        ipv4_address: 172.20.20.13
+
 # =============================================================================
 # Persistent volumes
 # =============================================================================
@@ -135,8 +196,8 @@ volumes:
 # =============================================================================
 # Shared network
 # =============================================================================
-# Containerlab will attach cEOS management interfaces to this same network
-# so that all lab components share a single L2 domain for management traffic.
+# All lab components (NetBox + mock switches) share a single L2 domain
+# for management traffic on 172.20.20.0/24.
 # =============================================================================
 networks:
   lab-net:

@@ -63,13 +63,13 @@ AI-assisted development (Milestone 2), and MCP tool design (Milestone 3).
       |                       |                       |
       v                       v                       v
 +------------+        +---------------+       +---------------+
-|  NetBox    |        |  Arista cEOS  |       |  Arista cEOS  |
-|  (REST)    |        |  spine1 (SSH) |       |  spine2 (SSH) |
-|            |        |               |       |               |
-| Source of  |        | Live network  |       | Live network  |
-| Truth      |        | device        |       | device        |
+|  NetBox    |        |  Mockit       |       |  Mockit       |
+|  (REST)    |        |  switch-01    |       |  switch-02/03 |
+|            |        |  (SSH)        |       |  (SSH)        |
+| Source of  |        | Emulated      |       | Emulated      |
+| Truth      |        | Arista EOS    |       | Arista EOS    |
 +------------+        +---------------+       +---------------+
- localhost:8000       clab-net-auto-spine1    clab-net-auto-spine2
+ localhost:8000        172.20.20.11          172.20.20.12/.13
 ```
 
 ---
@@ -154,8 +154,9 @@ Human: "Check the 10.0.1.0/24 subnet for stale IPs and clean them up."
 
 AI: [calls query_netbox_prefixes to verify the prefix exists]
 AI: [calls query_netbox_addresses(prefix="10.0.1.0/24") to see allocations]
-AI: [calls poll_device_arp(hostname="clab-net-auto-spine1")]
-AI: [calls poll_device_arp(hostname="clab-net-auto-spine2")]
+AI: [calls poll_device_arp(hostname="172.20.20.11")]
+AI: [calls poll_device_arp(hostname="172.20.20.12")]
+AI: [calls poll_device_arp(hostname="172.20.20.13")]
 AI: [calls find_stale_ips(prefix="10.0.1.0/24", hostnames=[...])]
 AI: "I found 3 stale IPs in 10.0.1.0/24. Here is the reclamation report:"
 AI: [calls generate_reclamation_report(...)]

@@ -14,7 +14,7 @@ Usage:
 Instructions:
     Use an LLM to help you complete the TODO sections below.
     Each TODO has a description of what the code should do.
-    After completing each section, test against your Containerlab switches.
+    After completing each section, test against your lab switches.
 
 Dependencies:
     pip install netmiko pyyaml rich

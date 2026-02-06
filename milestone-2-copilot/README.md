@@ -10,7 +10,7 @@ for correctness and safety.
 - Completed [Milestone 1](../milestone-1-manual/) (REST APIs, Python basics)
 - Python 3.11+
 - Access to an LLM (Claude, ChatGPT, or a local model)
-- A running Containerlab topology with 3 Arista cEOS switches
+- Lab environment running (`make lab-up` — includes 3 mock Arista EOS switches)
 - `pip install netmiko pyyaml rich`
 
 ## Lessons
@@ -31,7 +31,7 @@ for correctness and safety.
 ## Inventory
 
 The labs use a shared [inventory.yml](labs/inventory.yml) targeting 3 Arista
-cEOS switches in a Containerlab topology.
+EOS switches (Mockit emulators on the lab-net Docker network).
 
 Solutions are in the [solutions/](solutions/) directory. Try the labs yourself
 before looking.

@@ -1,0 +1,5 @@
+Address         Age (sec)  Hardware Addr   Interface
+10.0.1.20         0:00:12  0000.0a00.0114  Vlan100
+10.0.1.21         0:02:05  0000.0a00.0115  Vlan100
+10.0.1.2          -        0000.0a02.0001  Vlan100, not learned
+172.20.20.1       0:00:01  0000.dead.beef  Management0

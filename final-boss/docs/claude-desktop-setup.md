@@ -141,7 +141,7 @@ reads the config file on startup.
 ### Tools appear but calls fail
 
 - **Is the lab running?** Run `make lab-status` from the repo root to
-  check that NetBox and the Containerlab devices are up.
+  check that NetBox and the mock switches are up.
 - **Is the NetBox token correct?** Try the token in curl:
   ```bash
   curl -H "Authorization: Token YOUR_TOKEN" http://localhost:8000/api/ipam/prefixes/
@@ -157,13 +157,17 @@ reads the config file on startup.
 
 ### "Permission denied" or SSH errors for poll_device_arp
 
-- The MCP server needs to reach the Containerlab devices over SSH. Make
-  sure the management network is accessible from your host.
-- Default credentials for Containerlab cEOS devices: `admin` / `admin`.
-- If SSH host key checking is failing, you may need to accept the keys
-  first by SSHing manually:
-  ```bash
-  ssh admin@clab-net-auto-spine1
+- The mock switches are accessible via localhost port mapping:
+  - switch-01: localhost:2201
+  - switch-02: localhost:2202
+  - switch-03: localhost:2203
+- Default credentials: `admin` / `admin`.
+- Test SSH access via Netmiko:
+  ```python
+  from netmiko import ConnectHandler
+  conn = ConnectHandler(device_type="arista_eos", host="localhost",
+                        port=2201, username="admin", password="admin")
+  print(conn.send_command("show ip arp"))
   ```
 
 ### Claude says it cannot use a tool
